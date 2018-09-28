@@ -79,15 +79,15 @@ public final class QueryUtils {
                 String date_raw = currentArticle.getString("webPublicationDate");
                 String date = formatDateTime(date_raw);
 
+                // Extract the value for the key called "webUrl"
+                String url = currentArticle.getString("webUrl");
+
                 String author = "Unknown Author";
 
                 // Extract the value for the key called "tags" (Contributor/Author)
                 JSONArray contributorArray = currentArticle.getJSONArray("tags");
                 JSONObject currentTag = contributorArray.getJSONObject(0);
                 author = currentTag.getString("webTitle");
-
-                // Extract the value for the key called "webUrl"
-                String url = currentArticle.getString("webUrl");
 
                 // Create a new {@link Article} object with the magnitude, location, time,
                 // and url from the JSON response.

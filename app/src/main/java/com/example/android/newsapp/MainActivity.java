@@ -4,12 +4,16 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -31,7 +35,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /** URL for the Guardian news dataset */
     private static final String GUARDIAN_API_KEY = BuildConfig.ApiKey;
     private static final String GUARDIAN_REQUEST_URL =
-            "https://content.guardianapis.com/search?show-tags=contributor&api-key=" + GUARDIAN_API_KEY;
+            //"https://content.guardianapis.com/search?show-tags=contributor&api-key=" + GUARDIAN_API_KEY;
+            "https://content.guardianapis.com/search?";
+
 
     /**
      * Constant value for the article loader ID. We can choose any integer.
@@ -115,7 +121,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<List<Article>> onCreateLoader(int i, Bundle bundle) {
         // Create a new loader for the given URL
         Log.i(LOG_TAG, "TEST: onCreateLoader() called ...");
-        return new ArticleLoader(this, GUARDIAN_REQUEST_URL);
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String searchString = sharedPrefs.getString(
+                getString(R.string.settings_search_key),
+                getString(R.string.settings_search_default));
+
+        String orderBy  = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        );
+
+        Uri baseUri = Uri.parse(GUARDIAN_REQUEST_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        uriBuilder.appendQueryParameter("q", searchString); // Need to check when searchString is empty
+        uriBuilder.appendQueryParameter("show-tags", "contributor");
+        uriBuilder.appendQueryParameter("order-by", orderBy);
+        uriBuilder.appendQueryParameter("from-date", "2018-01-01");
+        uriBuilder.appendQueryParameter("api-key", GUARDIAN_API_KEY);
+
+        return new ArticleLoader(this, uriBuilder.toString());
     }
 
     @Override
@@ -149,5 +175,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.i(LOG_TAG, "TEST: onLoaderReset called ...");
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
+    }
+
+    // ADD Menu in the App Bar
+    //     - onCreateOptionsMenu, onOptionsItemSelected
+    @Override
+    // This method initialize the contents of the Activity's options menu
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the Options Menu we specified in XML
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    @Override
+    // This method is where we can setup the specific action that occurs when
+    // any of the items in the Options Menu are selected.
+    // This method is called whenever an item in the options menu is selected.
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Get the ID of the item that was selected.
+        // The menu item is defined by the android:id attribute in the menu resource (res/menu)
+        int id = item.getItemId();
+        // Open the SettingsActivity via an intent based on the ID
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

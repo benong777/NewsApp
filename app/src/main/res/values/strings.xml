@@ -1,11 +1,30 @@
 <resources>
     <string name="app_name">newsapp</string>
 
-    <!-- Default text to show with the earthquake location ("Near the Pacific-Antarctic Ridge")
- if no specific kilometer distance from the primary location is given [CHAR LIMIT=30] -->
-    <string name="near_the">Near the</string>
-
     <!-- emptyStateView -->
     <string name="no_data">No articles found.</string>
     <string name="no_internet_connection">No internet connection</string>
+
+    <!-- emptyStateView -->
+    <string name="settings_menu_item">Settings</string>
+    <string name="settings_title">Settings</string>
+
+    <!-- Strings For Search Preference [CHAR LIMIT=30] -->
+    <!-- Default = null -->
+    <string name="settings_search_label">Search Topic</string>
+    <string name="settings_search_key" translatable="false">search_news</string>
+    <string name="settings_search_default" translatable="false">Apple</string>
+
+    <!-- Strings For Order-By Preference [CHAR LIMIT=30] -->
+    <string name="settings_order_by_label">Order By</string>
+    <string name="settings_order_by_key" translatable="false">order_by</string>
+    <string name="settings_order_by_default" translatable="false">@string/settings_order_by_most_recent_value</string>
+
+    <!-- Label for order-by oldest option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_category_label">Oldest</string>
+    <string name="settings_order_by_category_value" translatable="false">oldest</string>
+
+    <!-- Label for order-by most recent option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_most_recent_label">Most Recent</string>
+    <string name="settings_order_by_most_recent_value" translatable="false">newest</string>
 </resources>
